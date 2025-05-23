@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Assistente Virtual com IA (PHP)</title>
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Assistente Virtual 🤖</h1>
+    <div id="chatbox" class="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Digite sua pergunta...">
+    <button onclick="sendMessage()">Enviar</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const chatbox = document.getElementById("chatbox");
+      const userText = input.value.trim();
+      if (userText === "") return;
+
+      chatbox.innerHTML += `<div class="user-message">${userText}</div>`;
+
+      const response = await fetch("chat.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userText })
+      });
+
+      const data = await response.json();
+      chatbox.innerHTML += `<div class="bot-message">${data.reply}</div>`;
+      input.value = "";
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
